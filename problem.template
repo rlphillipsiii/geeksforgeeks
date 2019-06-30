@@ -1,0 +1,22 @@
+/*******************************************************************************                                                                      
+*******************************************************************************/
+
+#include <iostream>
+#include <string>
+#include <istream>
+#include <fstream>
+
+using std::ifstream;
+using std::string;
+using std::istream;
+
+int main(int, char **)
+{
+#ifdef LOCAL
+    ifstream file(INPUT_FILE);
+#else
+    istream & file = cin;
+#endif
+
+    return 0;
+}
