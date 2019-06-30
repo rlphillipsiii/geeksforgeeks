@@ -1,7 +1,9 @@
 CXX=g++
 CXXFLAGS=-std=c++11 -g -DLOCAL
 
-all: src/%
+SOURCES=$(subst src/, , $(subst .cpp, , $(wildcard src/*.cpp)))
+
+all: $(SOURCES)
 
 %: src/%.cpp
 	$(CXX) $(CXXFLAGS) -DINPUT_FILE='"input/$@.txt"' -o binaries/$@ $<
