@@ -15,7 +15,7 @@ int main(int, char **)
 #ifdef LOCAL
     ifstream file(INPUT_FILE);
 #else
-    istream & file = cin;
+    istream & file = std::cin;
 #endif
 
     return 0;
