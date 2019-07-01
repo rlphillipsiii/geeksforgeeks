@@ -1,0 +1,17 @@
+4
+2
+db bcd 
+5 2
+d d b f e c b c d c 
+6
+dfd ded fd e dec df 
+4 2
+f f d e f b b e
+4
+GEEKS FOR QUIZ GO
+3 3
+G I Z U E K Q S E
+6
+b edc ddd cc ccb ffb
+5 2
+d d c c b f d d c d
