@@ -1,4 +1,22 @@
-/*******************************************************************************                                                                      
+/*******************************************************************************                                                                     https://practice.geeksforgeeks.org/problems/find-all-four-sum-numbers/0
+
+Given an array A of size N, find all combination of four elements in the array whose sum 
+is equal to a given value K. For example, if the given array is {10, 2, 3, 4, 5, 9, 7, 8} 
+and K = 23, one of the quadruple is “3 5 7 8” (3 + 5 + 7 + 8 = 23).
+
+The output should contain only unique quadrples  For example, if input array is 
+{1, 1, 1, 1, 1, 1} and K = 4, then output should be only one quadrple {1, 1, 1, 1}
+ 
+
+Input:
+The first line of input contains an integer T denoting the no of test cases. Then T test 
+cases follow. Each test case contains two lines. The first line of input contains two 
+integers N and K. Then in the next line are N space separated values of the array.
+
+Output:
+For each test case in a new line print all the quadruples present in the array separated 
+by space which sums up to value of K. Each quadruple is unique which are separated by a 
+delimeter "$" and are in increasing order. 
 *******************************************************************************/
 
 #include <iostream>
