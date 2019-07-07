@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++11 -g -DLOCAL
+CXXFLAGS=-std=c++11 -g -DLOCAL -Wall -Werror
 
 SOURCES=$(subst src/, , $(subst .cpp, , $(wildcard src/*.cpp)))
 

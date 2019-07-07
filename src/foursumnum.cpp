@@ -60,8 +60,8 @@ void foursumnum(int target, const vector<int> & input)
 
     set<Quad> quads;
     
-    for (size_t i = 0; i < input.size(); i++) {
-        for (size_t j = i + 1; j < input.size(); j++) {
+    for (int i = 0; i < int(input.size()); i++) {
+        for (int j = i + 1; j < int(input.size()); j++) {
             int sum = input.at(i) + input.at(j);
 
             auto iterator = pairs.find(target - sum);
