@@ -47,40 +47,39 @@ struct Route {
     ~Route() { }
 };
 
+typedef shared_ptr<Route> RoutePtr;
+
 struct Compare {
-    inline bool operator() (const shared_ptr<Route> & a, const shared_ptr<Route> & b)
+    inline bool operator() (const RoutePtr & a, const RoutePtr & b)
     {
         return (a->distance == b->distance) ?
             (a->visited.size() < b->visited.size()) : (a->distance > b->distance);
     }
 };
 
-typedef priority_queue<shared_ptr<Route>, vector<shared_ptr<Route>>, Compare> RouteQueue;
+typedef priority_queue<RoutePtr, vector<RoutePtr>, Compare> RouteQueue;
 
 int route(const vector<vector<int>> & matrix)
 {
     RouteQueue routes;
-    routes.push(shared_ptr<Route>(new Route(0, 0)));
+    routes.push(RoutePtr(new Route(0, 0)));
 
     while (!routes.empty()) {
-        shared_ptr<Route> route = routes.top();
+        RoutePtr route = routes.top();
         if (route->visited.size() == matrix.size()) {
             return route->distance;
         }
         routes.pop();
 
-        if (route->visited.find(0) != route->visited.end()) {
-            continue;
-        }
-        
         int city = route->city;
         for (int i = 0; i < int(matrix[city].size()); i++) {
             int distance = matrix[city][i];
-            if ((0 == distance) || (route->visited.find(i) != route->visited.end())) {
-                continue;
-            }
             
-            shared_ptr<Route> newRoute(new Route(i, route->distance + distance, route->visited));
+            if (0 == distance) { continue; }
+            if ((0 == i) && (route->visited.size() != (matrix.size() - 1))) { continue; }
+            if (route->visited.find(i) != route->visited.end()) { continue; }
+
+            RoutePtr newRoute(new Route(i, route->distance + distance, route->visited));
             newRoute->visited.insert(i);
 
             newRoute->cities = route->cities;
