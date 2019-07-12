@@ -70,138 +70,92 @@ int main()
 #include <utility>
 
 using std::unordered_map;
-using std::list;
 using std::string;
 using std::unordered_set;
 using std::vector;
+using std::pair;
+using std::queue;
 
 /*This is a function problem.You only need to complete the function given below*/
 //User function Template for C++
 /*The function should return a string denoting the 
 order of the words in the Alien Dictionary */
-string alphabetize(
-    const unordered_map<char, unordered_set<char>> & graph,    
-    vector<char> str,
-    char current,
-    int k,
-    unordered_set<char> visited)
+void build(
+    unordered_map<char, unordered_set<char>> & graph,
+    string dict[],
+    int N)
 {
-    str.push_back(current);
-    if (int(str.size()) == k) {
-        return string(str.begin(), str.end());
-    }
+    queue<pair<int, vector<string>>> bins;
+    bins.push({ 0, vector<string>(&dict[0], (&dict[0]) + N) });
 
+    while (!bins.empty()) {
+        auto bin = bins.front();
+        bins.pop();
+
+        vector<string> subset;
+
+        int index = bin.first;
+
+        const string *last = nullptr;
+        for (const string & str : bin.second) {
+            if (index >= int(str.size())) { continue; }
+
+            if (last) {
+                if (last->at(index) != str.at(index)) {
+                    graph[last->at(index)].insert(str.at(index));
+
+                    if (subset.size() > 1) {
+                        bins.push({ index + 1, subset });
+                    }
+                    subset.clear();
+                }
+            }
+
+            subset.push_back(str);
+            last = &str;
+        }
+
+        if (subset.size() > 1) { bins.push({ index + 1, subset }); }
+    }
+}
+    
+void alphabetize(
+    const unordered_map<char, unordered_set<char>> & graph,    
+    vector<char> & str,
+    unordered_set<char> & visited,
+    char current)
+{
     visited.insert(current);
     
     const auto & iterator = graph.find(current);
-    if (graph.end() == iterator) {
-        return "";
-    }
-    
-    for (char c : iterator->second) {
-        if (visited.find(c) != visited.end()) {
-            continue;
-        }
+    if (graph.end() != iterator) { 
+        for (char c : iterator->second) {
+            if (visited.find(c) != visited.end()) {
+                continue;
+            }
 
-        string order = alphabetize(graph, str, c, k, visited);
-        if (!order.empty()) {
-            return order;
+            alphabetize(graph, str, visited, c);
         }
     }
 
-    return "";
+    str.push_back(current);
 }
-
-typedef vector<list<const string *>> BucketList;
 
 string printOrder(string dict[], int N, int k)
 {
     unordered_map<char, unordered_set<char>> graph;
+    build(graph, dict, N);
 
-    BucketList buckets(1);
-    for (int i = 0; i < N; i++) { buckets[0].push_back(&dict[i]); }
+    vector<char> order;
 
-    queue<pair<int, BucketList>> next;
-    next.push({ 0, buckets });
-
-    unordered_set<char> alphabet;
-    
-    while (!next.empty()) {
-        auto entry = next.front();
-        next.pop();
-
-        int index = entry.first;
-        for (const auto & bucket : entry.second) {
-            BucketList sub;
-
-            char last = 0;
-
-            list<char> sorted;
-
-            unordered_map<char, list<const string*>> temp;
-            for (auto j = bucket.begin(); j != bucket.end(); j++) {
-                const string *word = *j;
-                
-                if (index >= int(word->size())) { continue; }
-
-                if ((0 != last) && (word->at(index) != last)) {
-                    graph[last].insert(word->at(index));
-
-                    alphabet.insert(last);
-                }
-                last = word->at(index);
-
-                temp[word->at(index)].push_back(word);
-                sorted.push_back(word->at(index));
-            }
-
-            for (char c : sorted) {
-                auto iterator = temp.find(c);
-                if (temp.end() == iterator) {
-                    continue;
-                }
-
-                if (iterator->second.size() > 1) {
-                    sub.push_back(iterator->second);
-                }
-                temp.erase(iterator);
-            }
-            
-            if (!sub.empty()) { next.push({ index + 1, sub }); }
-        }
-    }
-
+    unordered_set<char> visited;
     for (const auto & connections : graph) {
-        for (char c : connections.second) {
-            auto iterator = alphabet.find(c);
-            if (alphabet.end() == iterator) {
-                continue;
-            }
-            alphabet.erase(iterator);
+        char letter = connections.first;
+        
+        if (visited.find(letter) == visited.end()) {
+            alphabetize(graph, order, visited, letter);
         }
     }
 
-    for (const auto & connections : graph) {
-        std::cout << connections.first << ": ";
-        for (char c : connections.second) {
-            std::cout << c << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    for (char start : alphabet) {
-        vector<char> str;
-        for (char c : alphabet) {
-            if (c == start) { continue; }
-
-            str.push_back(c);
-        }
-
-        string order = alphabetize(graph, str, start, k, {});
-        if (!order.empty()) {
-            std::cout << order << std::endl;
-            return order;
-        }
-    }
-    return "";
+    return string(order.rbegin(), order.rend());
 }
